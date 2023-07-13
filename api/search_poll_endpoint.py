@@ -5,11 +5,14 @@ Module for polling search results using the Mozio API.
 import time
 
 from connections.api_connections import MozioClient
+from errors.errors import FieldNotFalseError, SearchNotValidError
+
 
 class SearchPoll:
     """
     Class for polling search results using the Mozio API.
     """
+
     @staticmethod
     def poll_search_results(search_id: str, client: object):
         """
@@ -39,16 +42,43 @@ class SearchPoll:
         Returns:
             str: The poll result ID for the search.
 
+         Raises:
+            FieldNotFalseError: If the 'more_coming' field never returns False.
+
         """
         more_comming = False
-        counter = 0
+        timeout = 20
         client = MozioClient()
-        while not more_comming and counter < 11:
+        start_time = time.time()
+        # poll results
+        while not more_comming:
             time.sleep(2)  # check every two seconds for new comming searches
             search_results = SearchPoll.poll_search_results(search_id, client)
             more_comming = search_results.get("more_coming", False)
-            counter += 1
-        results = search_results.get("results", [])
+            # Check if the timeout has been reached
+            elapsed_time = time.time() - start_time
+            if elapsed_time >= timeout:
+                raise FieldNotFalseError("The field more_comming never returned False")
+
+        results = search_results.get("results", [{}])
         result_id = results[0].get("result_id", "0")
+        SearchPoll.handle_errors(result_id)
         del client
         return result_id
+
+    @staticmethod
+    def handle_errors(result_id: str) -> None:
+        """
+        Evaluates if there is a valid ID from the response of the Mozio API.
+
+        Args:
+            result_id (str): The ID from the API response.
+
+        Raises:
+            SearchNotValidError: If the ID is not valid.
+        """
+        if not result_id or result_id == "0":
+            raise SearchNotValidError(
+                f"Failed to get a valid search id:\
+                    ID: {result_id}"
+            )

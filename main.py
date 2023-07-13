@@ -2,8 +2,8 @@
 Main script for performing a search and polling the results using the Mozio API.
 """
 
-from classes.endpoints.search import Search
-from classes.endpoints.search_poll import SearchPoll
+from api.search_endpoint import RideSearchParams, Search
+from api.search_poll_endpoint import SearchPoll
 
 
 def perform_search():
@@ -14,7 +14,7 @@ def perform_search():
         str: The search ID.
     """
     search = Search()
-    search_id = search.search_ride(
+    ride_params = RideSearchParams(
         start_address="44 Tehama Street, San Francisco, CA, USA",
         end_address="SFO",
         mode="one_way",
@@ -23,6 +23,7 @@ def perform_search():
         currency="USD",
         campaign="Nelson Solano",
     )
+    search_id = search.search_ride(ride_params)
     return search_id
 
 
