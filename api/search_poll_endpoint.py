@@ -14,7 +14,7 @@ class SearchPoll:
     """
 
     @staticmethod
-    def poll_search_results(search_id: str, client: object):
+    def poll_search_results(search_id: str, client: object) -> dict:
         """
         Poll the search results for a specific search ID using the Mozio API.
 
@@ -32,7 +32,7 @@ class SearchPoll:
         return search_results
 
     @staticmethod
-    def get_poll_result_id(search_id: str):
+    def get_poll_result_id(search_id: str) -> str:
         """
         Get the poll result ID for a specific search ID using the Mozio API.
 
@@ -46,15 +46,15 @@ class SearchPoll:
             FieldNotFalseError: If the 'more_coming' field never returns False.
 
         """
-        more_comming = False
+        more_comming = True
         timeout = 20
         client = MozioClient()
         start_time = time.time()
         # poll results
-        while not more_comming:
+        while more_comming:
             time.sleep(2)  # check every two seconds for new comming searches
             search_results = SearchPoll.poll_search_results(search_id, client)
-            more_comming = search_results.get("more_coming", False)
+            more_comming = search_results.get("more_coming", True)
             # Check if the timeout has been reached
             elapsed_time = time.time() - start_time
             if elapsed_time >= timeout:

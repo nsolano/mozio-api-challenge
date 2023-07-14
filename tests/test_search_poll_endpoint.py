@@ -1,5 +1,5 @@
 """
-Test module for the api_connections module.
+Test module for the search_poll_ednpoint module.
 """
 
 from unittest.mock import patch
@@ -34,7 +34,7 @@ def test_poll_search_results(mock_requests_get, client):
     mock_response = mock_requests_get.return_value
     mock_response.status_code = 200
     mock_response.json.return_value = {
-        "more_coming": True,
+        "more_coming": False,
         "results": [{"result_id": "123"}]
     }
 
@@ -43,7 +43,7 @@ def test_poll_search_results(mock_requests_get, client):
     response = SearchPoll.poll_search_results(search_id, client)
 
     assert response == {
-        "more_coming": True,
+        "more_coming": False,
         "results": [{"result_id": "123"}]
     }
 
@@ -55,7 +55,7 @@ def test_get_poll_result_id_valid_result(mock_requests_get):
     mock_response = mock_requests_get.return_value
     mock_response.status_code = 200
     mock_response.json.return_value = {
-        "more_coming": True,
+        "more_coming": False,
         "results": [{"result_id": "123"}]
     }
 
@@ -72,7 +72,7 @@ def test_get_poll_result_id_timeout(mock_requests_get):
     mock_response = mock_requests_get.return_value
     mock_response.status_code = 200
     mock_response.json.return_value = {
-        "more_coming": False,
+        "more_coming": True,
         "results": []
     }
 
@@ -92,7 +92,7 @@ def test_get_poll_result_id_invalid_result(results, mock_requests_get):
     mock_response = mock_requests_get.return_value
     mock_response.status_code = 200
     mock_response.json.return_value = {
-        "more_coming": True,
+        "more_coming": False,
         "results": [results]
     }
 

@@ -25,9 +25,24 @@ class APINonFieldError(Exception):
 class SearchNotValidError(Exception):
     """
     Custom exception class for a search not valid.
-    Raised when the API returns a not valid ID."""
+    Raised when the API returns a not valid ID or answer."""
 
 class FieldNotFalseError(Exception):
     """
     Custom exception class for the field more_coming.
     Raised more_coming never returned False."""
+
+class StatusFailedError(Exception):
+    """
+    Custom exception class for a failed status.
+    Raised when the API a failed status."""
+
+class FieldNotChangedError(Exception):
+    """
+    Custom exception class for the field status.
+    Raised when status never changed."""
+
+class DeleteFailedError(Exception):
+    """
+    Custom exception class for a failed status.
+    Raised when the API a failed status."""

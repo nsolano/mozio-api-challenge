@@ -90,7 +90,7 @@ class MozioClient:
         """
         if response.status_code == 400:
             raise APIBadRequestError(
-                f"Bad Request. {response.json().get('specific_param', '')}"
+                f"Bad Request. {response.json()}"
             )
 
         if response.status_code == 403:
@@ -100,5 +100,5 @@ class MozioClient:
 
         if response.status_code in range(404, 452):
             raise APINonFieldError(
-                f"The API responded with a non-field error: {response}"
+                f"The API responded with a non-field error: {response.json()}"
             )
